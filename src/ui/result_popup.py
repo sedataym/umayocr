@@ -38,6 +38,11 @@ class TransparentOverlay(QWidget):
         self.timer.timeout.connect(self.raise_)
         self.timer.start(2000)
 
+        self.hide_timer = QTimer(self)
+        self.hide_timer.setSingleShot(True)
+        self.hide_timer.timeout.connect(lambda: self.label.setText(""))
+        self.hide_timer.start(10000)
+
         # Manual drag state (X11BypassWindowManagerHint bypasses WM)
         self._drag_mode = None  # "move" or "resize"
         self._drag_start_pos = None
@@ -85,6 +90,7 @@ class TransparentOverlay(QWidget):
     def update_text(self, text):
         self.label.setText(text)
         self.raise_()
+        self.hide_timer.start(10000)
 
     def set_mode(self, scan):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, scan)
