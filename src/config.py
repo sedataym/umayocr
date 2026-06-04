@@ -46,7 +46,8 @@ PRESETS_FILE = os.path.join(CONFIG_DIR, "presets.pkl")
 
 # Temp Files
 TEMP_DIR = tempfile.gettempdir()
-IMG_PATH = os.path.join(TEMP_DIR, "umayocr_snapshot.png")
-FULL_SCREEN_TEMP_PATH = os.path.join(TEMP_DIR, "umayocr_full_snap.png")
+DEV_SHM ="/dev/shm"
+IMG_PATH = os.path.join(DEV_SHM, "umayocr_snapshot.jpeg")
+FULL_SCREEN_TEMP_PATH = os.path.join(DEV_SHM, "umayocr_full_snap.jpeg")
 SOCKET_PATH = os.path.join(TEMP_DIR, "umayocr.sock")
 SLURP_TEMP_PATH = os.path.join(TEMP_DIR, "slurp_final.txt")
