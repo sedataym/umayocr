@@ -435,6 +435,8 @@ class ControlPanel(QWidget):
     def stop(self):
         self.worker.stop()
         self.overlay.set_mode(False)
+        self.perf_bar.setValue(0)
+        self.perf_bar.setStyleSheet("")
 
     # ---------- Preset Management ----------
     def _load_presets_dict(self):
