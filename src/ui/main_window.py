@@ -8,6 +8,7 @@ from src.core.worker import OCRWorker
 from src.ui.result_popup import TransparentOverlay
 from src.core.sniper import SniperFactory
 from src.config import OCR_ENGINES, TRANSLATION_ENGINES, LANGUAGES, SETTINGS_FILE, PRESETS_FILE
+from src.i18n import _
 
 class ControlPanel(QWidget):
     def __init__(self):
@@ -53,28 +54,28 @@ class ControlPanel(QWidget):
         tab_status_layout.addStretch()
         
         # -- Region (bottom of status tab) --
-        self.rect_label_status = QLabel("Region: —")
+        self.rect_label_status = QLabel(_("Region: —"))
         self.rect_label_status.setStyleSheet("font-family: monospace;")
         tab_status_layout.addWidget(self.rect_label_status)
         
-        self.tabs.addTab(tab_status, "Status")
+        self.tabs.addTab(tab_status, _("Status"))
         
         # --- OCR Tab ---
         tab_ocr = QWidget()
         tab_ocr_layout = QVBoxLayout(tab_ocr)
-        tab_ocr_layout.addWidget(QLabel("OCR Engine:"))
+        tab_ocr_layout.addWidget(QLabel(_("OCR Engine:")))
         self.combo_ocr = QComboBox()
         self.combo_ocr.addItems(OCR_ENGINES)
         self.combo_ocr.currentTextChanged.connect(self.worker.set_engine)
         self.combo_ocr.currentTextChanged.connect(self.save_settings)
         tab_ocr_layout.addWidget(self.combo_ocr)
         tab_ocr_layout.addStretch()
-        self.tabs.addTab(tab_ocr, "OCR")
+        self.tabs.addTab(tab_ocr, _("OCR"))
         
         # --- Translation Tab ---
         tab_translation = QWidget()
         tab_translation_layout = QVBoxLayout(tab_translation)
-        tab_translation_layout.addWidget(QLabel("Translation Engine:"))
+        tab_translation_layout.addWidget(QLabel(_("Translation Engine:")))
         self.combo_translator = QComboBox()
         self.combo_translator.addItems(TRANSLATION_ENGINES)
         self.combo_translator.currentTextChanged.connect(self.worker.set_translator)
@@ -83,7 +84,7 @@ class ControlPanel(QWidget):
         
         h_lang = QHBoxLayout()
         v_source = QVBoxLayout()
-        v_source.addWidget(QLabel("Source Language:"))
+        v_source.addWidget(QLabel(_("Source Language:")))
         self.combo_source = QComboBox()
         self.combo_source.addItems(list(LANGUAGES.keys()))
         self.combo_source.setCurrentText("English")
@@ -92,7 +93,7 @@ class ControlPanel(QWidget):
         h_lang.addLayout(v_source)
 
         v_target = QVBoxLayout()
-        v_target.addWidget(QLabel("Target Language:"))
+        v_target.addWidget(QLabel(_("Target Language:")))
         self.combo_target = QComboBox()
         self.combo_target.addItems(list(LANGUAGES.keys()))
         self.combo_target.setCurrentText("Turkish")
@@ -101,7 +102,7 @@ class ControlPanel(QWidget):
         h_lang.addLayout(v_target)
         tab_translation_layout.addLayout(h_lang)
         tab_translation_layout.addStretch()
-        self.tabs.addTab(tab_translation, "Translation")
+        self.tabs.addTab(tab_translation, _("Translation"))
         
         # --- Appearance Tab ---
         tab_appearance = QWidget()
@@ -109,14 +110,14 @@ class ControlPanel(QWidget):
         
         h_font = QHBoxLayout()
         v_font_family = QVBoxLayout()
-        v_font_family.addWidget(QLabel("Font Family:"))
+        v_font_family.addWidget(QLabel(_("Font Family:")))
         self.font_picker = QFontComboBox()
         self.font_picker.currentFontChanged.connect(self.on_font_changed)
         v_font_family.addWidget(self.font_picker)
         h_font.addLayout(v_font_family)
 
         v_font_size = QVBoxLayout()
-        v_font_size.addWidget(QLabel("Size:"))
+        v_font_size.addWidget(QLabel(_("Size:")))
         self.font_size_spin = QSpinBox()
         self.font_size_spin.setRange(8, 72)
         self.font_size_spin.setValue(self.overlay.font_size)
@@ -126,7 +127,7 @@ class ControlPanel(QWidget):
         tab_appearance_layout.addLayout(h_font)
 
         h_colors = QHBoxLayout()
-        self.btn_color = QPushButton("🎨 Text Color")
+        self.btn_color = QPushButton(_("🎨 Text Color"))
         self.btn_color.clicked.connect(self.choose_color)
         h_colors.addWidget(self.btn_color)
 
@@ -135,7 +136,7 @@ class ControlPanel(QWidget):
         self.color_sample.setStyleSheet(f"background-color: {self.overlay.font_color}; border: 1px solid gray; border-radius: 4px;")
         h_colors.addWidget(self.color_sample)
 
-        self.btn_bg_color = QPushButton("🎨 Background")
+        self.btn_bg_color = QPushButton(_("🎨 Background"))
         self.btn_bg_color.clicked.connect(self.choose_bg_color)
         h_colors.addWidget(self.btn_bg_color)
 
@@ -146,7 +147,7 @@ class ControlPanel(QWidget):
         tab_appearance_layout.addLayout(h_colors)
 
         h_bg_opacity = QHBoxLayout()
-        h_bg_opacity.addWidget(QLabel("Background Opacity:"))
+        h_bg_opacity.addWidget(QLabel(_("Background Opacity:")))
         self.bg_opacity_spin = QSpinBox()
         self.bg_opacity_spin.setRange(0, 255)
         self.bg_opacity_spin.setValue(self.overlay.bg_opacity)
@@ -161,51 +162,52 @@ class ControlPanel(QWidget):
         tab_save_layout = QVBoxLayout(tab_save)
         
         h_name = QHBoxLayout()
-        h_name.addWidget(QLabel("Preset Name:"))
+        h_name.addWidget(QLabel(_("Preset Name:")))
         self.preset_name_input = QLineEdit()
-        self.preset_name_input.setPlaceholderText("Enter preset name...")
+        self.preset_name_input.setPlaceholderText(_("Enter preset name..."))
         h_name.addWidget(self.preset_name_input)
         tab_save_layout.addLayout(h_name)
         
         h_buttons = QHBoxLayout()
-        self.btn_save_preset = QPushButton("💾 Save")
+        self.btn_save_preset = QPushButton(_("💾 Save"))
         self.btn_save_preset.clicked.connect(self.save_preset)
         h_buttons.addWidget(self.btn_save_preset)
         
-        self.btn_load_preset = QPushButton("📂 Load")
+        self.btn_load_preset = QPushButton(_("📂 Load"))
         self.btn_load_preset.clicked.connect(self.load_preset)
         h_buttons.addWidget(self.btn_load_preset)
         
-        self.btn_delete_preset = QPushButton("🗑 Delete")
+        self.btn_delete_preset = QPushButton(_("🗑 Delete"))
         self.btn_delete_preset.clicked.connect(self.delete_preset)
         h_buttons.addWidget(self.btn_delete_preset)
         tab_save_layout.addLayout(h_buttons)
         
-        tab_save_layout.addWidget(QLabel("Saved Presets:"))
+        tab_save_layout.addWidget(QLabel(_("Saved Presets:")))
         self.preset_combo = QComboBox()
         tab_save_layout.addWidget(self.preset_combo)
         tab_save_layout.addStretch()
         
-        self.tabs.addTab(tab_save, "Save")
+        self.tabs.addTab(tab_save, _("Save"))
         
         # --- About Tab (last) ---
         tab_about = QWidget()
         tab_about_layout = QVBoxLayout(tab_about)
-        about_title = QLabel("<b>UmayOCR General Instant Translator</b>")
+        about_title = QLabel(_("<b>UmayOCR General Instant Translator</b>"))
         about_title.setStyleSheet("font-size: 14px;")
         tab_about_layout.addWidget(about_title)
-        tab_about_layout.addWidget(QLabel("Version: 0.1.0"))
+        tab_about_layout.addWidget(QLabel(_("Version: 0.1.0")))
         tab_about_layout.addWidget(QLabel(""))
-        tab_about_layout.addWidget(QLabel("A real-time OCR-based translation tool."))
-        tab_about_layout.addWidget(QLabel("Select a screen region, capture text via OCR,"))
-        tab_about_layout.addWidget(QLabel("and translate instantly with Google or DeepL."))
+        tab_about_layout.addWidget(QLabel(_("A real-time OCR-based translation tool.")))
+        tab_about_layout.addWidget(QLabel(_("Select a screen region, capture text via OCR,")))
+        tab_about_layout.addWidget(QLabel(_("and translate instantly with Google or DeepL.")))
         tab_about_layout.addStretch()
-        self.tabs.addTab(tab_about, "About")
+        self.tabs.addTab(tab_about, _("About"))
+
         
         layout.addWidget(self.tabs)
 
         # --- Performance Indicator (outside tabs) ---
-        layout.addWidget(QLabel("<br><b>Performance</b>"))
+        layout.addWidget(QLabel(_("<br><b>Performance</b>")))
         self.perf_bar = QProgressBar()
         self.perf_bar.setRange(0, 100)
         self.perf_bar.setValue(0)
@@ -214,18 +216,18 @@ class ControlPanel(QWidget):
         layout.addWidget(self.perf_bar)
         
         # --- Controls (outside tabs) ---
-        layout.addWidget(QLabel("<b>Controls</b>"))
-        self.btn_reg = QPushButton("🖼 Select Region")
+        layout.addWidget(QLabel(_("<b>Controls</b>")))
+        self.btn_reg = QPushButton(_("🖼 Select Region"))
         self.btn_reg.setStyleSheet("background-color: #1565C0; color: white; font-weight: bold; padding: 10px;")
         self.btn_reg.clicked.connect(self.select_region)
         layout.addWidget(self.btn_reg)
         
-        self.btn_start = QPushButton("▶ Start")
+        self.btn_start = QPushButton(_("▶ Start"))
         self.btn_start.setStyleSheet("background-color: #2E7D32; color: white; font-weight: bold; padding: 10px;")
         self.btn_start.clicked.connect(self.start)
         layout.addWidget(self.btn_start)
         
-        self.btn_stop = QPushButton("■ Stop")
+        self.btn_stop = QPushButton(_("■ Stop"))
         self.btn_stop.setStyleSheet("background-color: #C62828; color: white; font-weight: bold; padding: 10px;")
         self.btn_stop.clicked.connect(self.stop)
         layout.addWidget(self.btn_stop)
@@ -357,7 +359,7 @@ class ControlPanel(QWidget):
     def update_rect_label(self):
         r = self.worker.capture_rect
         self.rect_label_status.setText(
-            f"Region: X:{r.x()} Y:{r.y()}  {r.width()}×{r.height()}"
+            _("Region: X:{x} Y:{y}  {w}×{h}").format(x=r.x(), y=r.y(), w=r.width(), h=r.height())
         )
 
     def update_performance_bar(self, duration):
@@ -433,6 +435,8 @@ class ControlPanel(QWidget):
     def stop(self):
         self.worker.stop()
         self.overlay.set_mode(False)
+        self.perf_bar.setValue(0)
+        self.perf_bar.setStyleSheet("")
 
     # ---------- Preset Management ----------
     def _load_presets_dict(self):
@@ -496,7 +500,7 @@ class ControlPanel(QWidget):
         """Load the selected preset from the combo box and apply it."""
         name = self.preset_combo.currentText()
         if not name:
-            QMessageBox.information(self, "No Selection", "Please select a preset to load.")
+            QMessageBox.information(self, _("No Selection"), _("Please select a preset to load."))
             return
         presets = self._load_presets_dict()
         preset = presets.get(name)

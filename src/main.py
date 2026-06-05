@@ -9,8 +9,12 @@ if project_root not in sys.path:
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from src.ui.main_window import ControlPanel
+from src.i18n import init_i18n
 
 def main():
+    # Initialize internationalization
+    init_i18n()
+    
     os.environ["QT_QPA_PLATFORM"] = "xcb"
     
     app = QApplication(sys.argv)

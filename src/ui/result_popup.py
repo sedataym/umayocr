@@ -98,7 +98,7 @@ class TransparentOverlay(QWidget):
             self.hide_timer.start(10000)
         else:
             self.hide_timer.stop()
-            self.label.setText("Translation will appear here.")
+            self.label.setText(_("Translation will appear here."))
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:

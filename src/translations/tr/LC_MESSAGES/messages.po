@@ -1,0 +1,160 @@
+# Turkish translations for UmayOCR.
+# Copyright (C) 2026 Sedat Ayma
+# This file is distributed under the same license as the UmayOCR project.
+# Sedat Ayma <sedataym@example.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: UmayOCR 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-05 15:41+0300\n"
+"PO-Revision-Date: 2026-06-05 15:42+0300\n"
+"Last-Translator: Sedat Ayma\n"
+"Language: tr\n"
+"Language-Team: Turkish\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/ui/main_window.py:57
+msgid "Region: —"
+msgstr "Bölge: —"
+
+#: src/ui/main_window.py:61
+msgid "Status"
+msgstr "Durum"
+
+#: src/ui/main_window.py:66
+msgid "OCR Engine:"
+msgstr "OCR Motoru:"
+
+#: src/ui/main_window.py:73
+msgid "OCR"
+msgstr "OCR"
+
+#: src/ui/main_window.py:78
+msgid "Translation Engine:"
+msgstr "Çeviri Motoru:"
+
+#: src/ui/main_window.py:87
+msgid "Source Language:"
+msgstr "Kaynak Dil:"
+
+#: src/ui/main_window.py:96
+msgid "Target Language:"
+msgstr "Hedef Dil:"
+
+#: src/ui/main_window.py:105
+msgid "Translation"
+msgstr "Çeviri"
+
+#: src/ui/main_window.py:113
+msgid "Font Family:"
+msgstr "Yazı Tipi:"
+
+#: src/ui/main_window.py:120
+msgid "Size:"
+msgstr "Boyut:"
+
+#: src/ui/main_window.py:130
+msgid "🎨 Text Color"
+msgstr "🎨 Metin Rengi"
+
+#: src/ui/main_window.py:139
+msgid "🎨 Background"
+msgstr "🎨 Arkaplan"
+
+#: src/ui/main_window.py:150
+msgid "Background Opacity:"
+msgstr "Arkaplan Saydamlığı:"
+
+#: src/ui/main_window.py:165
+msgid "Preset Name:"
+msgstr "Hazır Ayar Adı:"
+
+#: src/ui/main_window.py:167
+msgid "Enter preset name..."
+msgstr "Ayar adını girin..."
+
+#: src/ui/main_window.py:172
+msgid "💾 Save"
+msgstr "💾 Kaydet"
+
+#: src/ui/main_window.py:176
+msgid "📂 Load"
+msgstr "📂 Yükle"
+
+#: src/ui/main_window.py:180
+msgid "🗑 Delete"
+msgstr "🗑 Sil"
+
+#: src/ui/main_window.py:185
+msgid "Saved Presets:"
+msgstr "Kayıtlı Ayarlar:"
+
+#: src/ui/main_window.py:190
+msgid "Save"
+msgstr "Kaydet"
+
+#: src/ui/main_window.py:195
+msgid "<b>UmayOCR General Instant Translator</b>"
+msgstr "<b>UmayOCR Genel Anlık Çevirmen</b>"
+
+#: src/ui/main_window.py:198
+msgid "Version: 0.1.0"
+msgstr "Versiyon: 0.1.0"
+
+#: src/ui/main_window.py:200
+msgid "A real-time OCR-based translation tool."
+msgstr "Gerçek zamanlı OCR tabanlı bir çeviri aracı."
+
+#: src/ui/main_window.py:201
+msgid "Select a screen region, capture text via OCR,"
+msgstr "Ekran bölgesi seçin, OCR ile metni yakalayın,"
+
+#: src/ui/main_window.py:202
+msgid "and translate instantly with Google or DeepL."
+msgstr "ve Google veya DeepL ile anında çevirin."
+
+#: src/ui/main_window.py:204
+msgid "About"
+msgstr "Hakkında"
+
+#: src/ui/main_window.py:210
+msgid "<br><b>Performance</b>"
+msgstr "<br><b>Performans</b>"
+
+#: src/ui/main_window.py:219
+msgid "<b>Controls</b>"
+msgstr "<b>Kontroller</b>"
+
+#: src/ui/main_window.py:220
+msgid "🖼 Select Region"
+msgstr "🖼 Bölge Seç"
+
+#: src/ui/main_window.py:225
+msgid "▶ Start"
+msgstr "▶ Başlat"
+
+#: src/ui/main_window.py:230
+msgid "■ Stop"
+msgstr "■ Durdur"
+
+#: src/ui/main_window.py:362
+#, python-brace-format
+msgid "Region: X:{x} Y:{y}  {w}×{h}"
+msgstr "Bölge: X:{x} Y:{y}  {w}×{h}"
+
+#: src/ui/main_window.py:501
+msgid "No Selection"
+msgstr "Seçim Yok"
+
+#: src/ui/main_window.py:501
+msgid "Please select a preset to load."
+msgstr "Lütfen yüklemek için bir hazır ayar seçin."
+
+#: src/ui/result_popup.py:101
+msgid "Translation will appear here."
+msgstr "Çeviri burada görünecek."
