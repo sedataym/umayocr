@@ -4,6 +4,7 @@ easyocr>=1.7.0
 paddleocr>=3.6.0
 # paddlepaddle  (PaddleOCR's native inference backend — uncomment when available for your Python version)
 #   pip install paddlepaddle  (requires Python ≤ 3.12 as of June 2026)
+deepl>=1.0.0
 deep-translator>=1.11.0
 python-dotenv>=1.0.0
 Pillow>=10.0.0

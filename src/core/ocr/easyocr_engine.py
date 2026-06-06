@@ -11,7 +11,7 @@ class EasyOCREngine(BaseOCREngine):
         new_lang = mapping["easy"]
         
         # Always include 'en' as base, but add the target language if different
-        target_langs = list(set(['en', new_lang]))
+        target_langs = list({'en', new_lang})
         
         if target_langs != self.current_langs:
             self.current_langs = target_langs
@@ -27,7 +27,7 @@ class EasyOCREngine(BaseOCREngine):
         try:
             res = self.reader.readtext(image_path)
             clean = " ".join([r[1] for r in res])
-            return " ".join(clean.split()).strip()
+            return " ".join(clean.split()).strip().strip("_").rstrip(":")
         except Exception as e:
             print(f"EasyOCR Error: {e}")
             return ""
