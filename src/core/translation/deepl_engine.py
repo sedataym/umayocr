@@ -22,6 +22,10 @@ class DeepLTranslatorEngine(BaseTranslator):
                 print(f"DeepL Initialization Error: {e}")
         return self._translator
 
+    def set_api_key(self, api_key: str):
+        self.api_key = api_key
+        self._translator = None  # reset so next access reinitializes with new key
+
     def set_languages(self, source: str, target: str):
         self.source = source
         self.target = target

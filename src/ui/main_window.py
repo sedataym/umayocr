@@ -80,6 +80,7 @@ class ControlPanel(QWidget):
         self.combo_translator.addItems(TRANSLATION_ENGINES)
         self.combo_translator.currentTextChanged.connect(self.worker.set_translator)
         self.combo_translator.currentTextChanged.connect(self.save_settings)
+        self.combo_translator.currentTextChanged.connect(self.on_translator_changed)
         tab_translation_layout.addWidget(self.combo_translator)
         
         h_lang = QHBoxLayout()
@@ -101,6 +102,21 @@ class ControlPanel(QWidget):
         v_target.addWidget(self.combo_target)
         h_lang.addLayout(v_target)
         tab_translation_layout.addLayout(h_lang)
+        
+        # --- API Key field (shown for engines that need one, e.g. DeepL) ---
+        self.api_key_label = QLabel(_("API Key"))
+        tab_translation_layout.addWidget(self.api_key_label)
+        self.api_key_input = QLineEdit()
+        self.api_key_input.setEchoMode(QLineEdit.Password)
+        self.api_key_input.setPlaceholderText(_("Enter API key..."))
+        self.api_key_input.textChanged.connect(self.on_api_key_changed)
+        tab_translation_layout.addWidget(self.api_key_input)
+        # Store api keys persistently, keyed by engine name
+        self.api_keys = {}
+        # Initially hidden; shown only when the current engine needs an API key
+        self.api_key_label.hide()
+        self.api_key_input.hide()
+        
         tab_translation_layout.addStretch()
         self.tabs.addTab(tab_translation, _("Translation"))
         
@@ -288,6 +304,7 @@ class ControlPanel(QWidget):
             "font_color": self.overlay.font_color,
             "bg_color": self.overlay.bg_color,
             "bg_opacity": self.overlay.bg_opacity,
+            "translator_api_keys": self.api_keys,
             "capture_rect": (self.worker.capture_rect.x(), self.worker.capture_rect.y(), 
                             self.worker.capture_rect.width(), self.worker.capture_rect.height())
         }
@@ -335,6 +352,10 @@ class ControlPanel(QWidget):
                     self.worker.set_rect(QRect(rect[0], rect[1], rect[2], rect[3]))
                     self.update_rect_label()
                 
+                # Load API keys
+                self.api_keys = s.get("translator_api_keys", {})
+                self._apply_api_key_for_current_engine()
+
                 self.update_languages()
                 print("Settings loaded.")
                 return
@@ -437,6 +458,42 @@ class ControlPanel(QWidget):
         self.overlay.set_mode(False)
         self.perf_bar.setValue(0)
         self.perf_bar.setStyleSheet("")
+
+    # ---------- API Key Helpers ----------
+    def _apply_api_key_for_current_engine(self):
+        """Update the API key textbox visibility and value for the current engine."""
+        engine = self.combo_translator.currentText()
+        key = self.api_keys.get(engine, "")
+        # Block signals to avoid triggering on_api_key_changed during load
+        self.api_key_input.blockSignals(True)
+        self.api_key_input.setText(key)
+        self.api_key_input.blockSignals(False)
+        # Push to worker so the engine uses the saved key
+        if key:
+            self.worker.set_api_key(engine, key)
+        # Show field only for engines that have a key entry (currently DeepL)
+        self._update_api_key_visibility(engine)
+
+    def _update_api_key_visibility(self, engine: str):
+        """Show API key field only for engines that need one."""
+        engines_needing_key = {"DeepL"}
+        if engine in engines_needing_key:
+            self.api_key_label.show()
+            self.api_key_input.show()
+        else:
+            self.api_key_label.hide()
+            self.api_key_input.hide()
+
+    def on_translator_changed(self, engine: str):
+        """Called when the translation engine combo box changes."""
+        self._apply_api_key_for_current_engine()
+
+    def on_api_key_changed(self, text: str):
+        """Called when the user types in the API key text box."""
+        engine = self.combo_translator.currentText()
+        self.api_keys[engine] = text
+        self.worker.set_api_key(engine, text)
+        self.save_settings()
 
     # ---------- Preset Management ----------
     def _load_presets_dict(self):

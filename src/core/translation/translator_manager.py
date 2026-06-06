@@ -15,6 +15,11 @@ class TranslatorManager:
         if name in self.translators:
             self.current_translator_name = name
 
+    def set_api_key(self, engine: str, api_key: str):
+        translator = self.translators.get(engine)
+        if translator and hasattr(translator, "set_api_key"):
+            translator.set_api_key(api_key)
+
     def set_languages(self, source: str, target: str):
         self._source_lang = source
         self._target_lang = target

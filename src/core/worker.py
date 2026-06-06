@@ -45,6 +45,12 @@ class OCRWorker(QThread):
             self.last_text = ""
             print(f"OCRWorker: Translator: {translator_name}")
 
+    def set_api_key(self, engine: str, api_key: str):
+        with self.lock:
+            self.translator_manager.set_api_key(engine, api_key)
+            self.last_text = ""
+            print(f"OCRWorker: API key set for: {engine}")
+
     def set_languages(self, source, target):
         with self.lock:
             self.translator_manager.set_languages(source, target)
