@@ -315,6 +315,8 @@ class ControlPanel(QWidget):
         if enabled:
             self.raise_()
             self.activateWindow()
+        else:
+            self.lower()
 
     def on_font_changed(self, font):
         self.overlay.set_font_family(font.family())

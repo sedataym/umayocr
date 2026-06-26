@@ -43,16 +43,16 @@ class TransparentOverlay(QWidget):
         self.settings_button.setCursor(Qt.PointingHandCursor)
         self.settings_button.setStyleSheet(
             "QPushButton {"
-            "background: rgba(32, 32, 32, 190);"
+            "background: rgba(32, 32, 32, 120);"
             "color: white;"
-            "border: 1px solid rgba(255, 255, 255, 150);"
+            "border: none;"
             "border-radius: 14px;"
             "font-size: 16px;"
             "font-weight: bold;"
             "padding: 0px;"
             "}"
             "QPushButton:hover {"
-            "background: rgba(64, 64, 64, 220);"
+            "background: rgba(64, 64, 64, 170);"
             "}"
         )
         self.settings_button.clicked.connect(self._toggle_main_window_topmost)
