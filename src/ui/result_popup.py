@@ -1,7 +1,10 @@
-from PySide6.QtCore import Qt, QTimer, Slot
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PySide6.QtCore import Qt, QTimer, Signal, Slot
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
+from src.i18n import _
 
 class TransparentOverlay(QWidget):
+    main_window_topmost_requested = Signal(bool)
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("UMAYOCR_TRANSLATION_OVERLAY")
@@ -32,6 +35,28 @@ class TransparentOverlay(QWidget):
         self.label.setAlignment(Qt.AlignCenter)
         self.update_style()
         self.layout.addWidget(self.label)
+
+        self._main_window_topmost_requested = False
+        self.settings_button = QPushButton("⚙", self)
+        self.settings_button.setFixedSize(28, 28)
+        self.settings_button.setToolTip(_("Show settings on top"))
+        self.settings_button.setCursor(Qt.PointingHandCursor)
+        self.settings_button.setStyleSheet(
+            "QPushButton {"
+            "background: rgba(32, 32, 32, 190);"
+            "color: white;"
+            "border: 1px solid rgba(255, 255, 255, 150);"
+            "border-radius: 14px;"
+            "font-size: 16px;"
+            "font-weight: bold;"
+            "padding: 0px;"
+            "}"
+            "QPushButton:hover {"
+            "background: rgba(64, 64, 64, 220);"
+            "}"
+        )
+        self.settings_button.clicked.connect(self._toggle_main_window_topmost)
+        self.settings_button.hide()
         
         self.hide_timer = QTimer(self)
         self.hide_timer.setSingleShot(True)
@@ -91,8 +116,27 @@ class TransparentOverlay(QWidget):
         self.raise_()
         self.hide_timer.start(10000)
 
+    def _toggle_main_window_topmost(self):
+        self._main_window_topmost_requested = not self._main_window_topmost_requested
+        self.settings_button.setToolTip(
+            _("Disable settings always on top")
+            if self._main_window_topmost_requested
+            else _("Show settings on top")
+        )
+        self.main_window_topmost_requested.emit(self._main_window_topmost_requested)
+
+    def enterEvent(self, event):
+        self.settings_button.move(8, 8)
+        self.settings_button.show()
+        self.settings_button.raise_()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.settings_button.hide()
+        super().leaveEvent(event)
+
     def set_mode(self, scan):
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, scan)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
         self.setCursor(Qt.ArrowCursor if scan else Qt.SizeAllCursor)
         if scan:
             self.hide_timer.start(10000)

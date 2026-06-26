@@ -1,7 +1,7 @@
 import time
 import pickle
 import os
-from PySide6.QtCore import Qt, QRect, QPoint, QTimer
+from PySide6.QtCore import Qt, QRect, QPoint, QTimer, Slot
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QApplication, QFontComboBox, QSpinBox, QDoubleSpinBox, QHBoxLayout, QColorDialog, QProgressBar, QTabWidget, QListWidget, QLineEdit, QMessageBox
 from src.core.worker import OCRWorker
@@ -272,6 +272,8 @@ class ControlPanel(QWidget):
         self.worker.new_translation.connect(self.overlay.update_text)
         self.worker.performance_update.connect(self.update_performance_bar)
         self.worker.running_status.connect(self.update_system_status)
+        self.overlay.main_window_topmost_requested.connect(self.set_settings_always_on_top)
+        self._settings_always_on_top = False
         
         # Load settings or set defaults
         self.load_settings()
@@ -301,6 +303,18 @@ class ControlPanel(QWidget):
         
         # For windows bypassing the WM, move after show is often more reliable
         self.overlay.move(target_x, target_y)
+
+    @Slot(bool)
+    def set_settings_always_on_top(self, enabled):
+        """Toggle the control panel's always-on-top state from the overlay."""
+        self._settings_always_on_top = enabled
+        self.setWindowFlag(Qt.WindowStaysOnTopHint, enabled)
+        self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+        self.show()
+
+        if enabled:
+            self.raise_()
+            self.activateWindow()
 
     def on_font_changed(self, font):
         self.overlay.set_font_family(font.family())
@@ -681,4 +695,3 @@ class ControlPanel(QWidget):
             print(f"Preset '{name}' deleted.")
         else:
             QMessageBox.warning(self, "Not Found", f"Preset '{name}' not found.")
-
