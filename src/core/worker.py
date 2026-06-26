@@ -9,6 +9,8 @@ from src.core.socket_publisher import TranslationPublisher
 from src.config import IMG_PATH, DPI_SCALE_DEFAULT
 
 class OCRWorker(QThread):
+    LOOP_SLEEP_SECONDS = 0.2
+
     new_translation = Signal(str)
     performance_update = Signal(float) # Loop duration in seconds
     translation_status = Signal(bool)  # True: translating (API call active), False: idle
@@ -105,11 +107,11 @@ class OCRWorker(QThread):
                     translating = self._is_translating
 
                 if rect.width() < 10 or rect.height() < 10:
-                    time.sleep(0.5); continue
+                    time.sleep(self.LOOP_SLEEP_SECONDS); continue
 
                 # 1. Capture
                 if not self.screenshot_engine.capture(rect, IMG_PATH, self.dpi_scale):
-                    time.sleep(0.5); continue
+                    time.sleep(self.LOOP_SLEEP_SECONDS); continue
 
                 # 2. Prep (Special processing for Tesseract only)
                 if current_engine == "Tesseract":
@@ -129,4 +131,4 @@ class OCRWorker(QThread):
 
             except Exception as e:
                 print(f"Loop Error: {e}")
-            time.sleep(0.3)
+            time.sleep(self.LOOP_SLEEP_SECONDS)
