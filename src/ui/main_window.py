@@ -1,7 +1,7 @@
 import time
 import pickle
 import os
-from PySide6.QtCore import Qt, QRect, QPoint, QTimer
+from PySide6.QtCore import Qt, QRect, QPoint, QTimer, Slot
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QApplication, QFontComboBox, QSpinBox, QDoubleSpinBox, QHBoxLayout, QColorDialog, QProgressBar, QTabWidget, QListWidget, QLineEdit, QMessageBox
 from src.core.worker import OCRWorker
@@ -24,6 +24,7 @@ class ControlPanel(QWidget):
         # Disable maximization
         self.setWindowFlags(self.windowFlags() | Qt.MSWindowsFixedSizeDialogHint)
         self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+        self._normal_window_flags = self.windowFlags()
         
         layout = QVBoxLayout(self)
         layout.setSizeConstraint(QVBoxLayout.SetFixedSize) # Fixed size according to content
@@ -272,6 +273,8 @@ class ControlPanel(QWidget):
         self.worker.new_translation.connect(self.overlay.update_text)
         self.worker.performance_update.connect(self.update_performance_bar)
         self.worker.running_status.connect(self.update_system_status)
+        self.overlay.main_window_topmost_requested.connect(self.set_settings_always_on_top)
+        self._settings_always_on_top = False
         
         # Load settings or set defaults
         self.load_settings()
@@ -301,6 +304,28 @@ class ControlPanel(QWidget):
         
         # For windows bypassing the WM, move after show is often more reliable
         self.overlay.move(target_x, target_y)
+
+    @Slot(bool)
+    def set_settings_always_on_top(self, enabled):
+        """Toggle the control panel's game-friendly topmost state from the overlay."""
+        self._settings_always_on_top = enabled
+
+        if enabled:
+            # Keep the control panel decorated by the window manager.
+            # Qt.Tool / Qt.X11BypassWindowManagerHint can remove borders on some WMs,
+            # so the settings window uses normal flags plus always-on-top here.
+            self.setWindowFlags(self._normal_window_flags | Qt.WindowStaysOnTopHint)
+            self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+            self.setAttribute(Qt.WA_ShowWithoutActivating, True)
+            self.show()
+            self.raise_()
+            self.activateWindow()
+        else:
+            self.setAttribute(Qt.WA_ShowWithoutActivating, False)
+            self.setWindowFlags(self._normal_window_flags)
+            self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+            self.show()
+            self.lower()
 
     def on_font_changed(self, font):
         self.overlay.set_font_family(font.family())
@@ -681,4 +706,3 @@ class ControlPanel(QWidget):
             print(f"Preset '{name}' deleted.")
         else:
             QMessageBox.warning(self, "Not Found", f"Preset '{name}' not found.")
-
