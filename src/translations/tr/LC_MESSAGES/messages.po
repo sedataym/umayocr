@@ -31,6 +31,10 @@ msgid "OCR Engine:"
 msgstr "OCR Motoru:"
 
 #: src/ui/main_window.py:73
+msgid "Screen Engine:"
+msgstr "Ekran Motoru:"
+
+#: src/ui/main_window.py:73
 msgid "OCR"
 msgstr "OCR"
 

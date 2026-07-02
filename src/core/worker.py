@@ -4,6 +4,7 @@ from threading import Lock
 from PySide6.QtCore import QThread, Signal, QRect
 from src.core.ocr.ocr_manager import OCRManager
 from src.core.translation.translator_manager import TranslatorManager
+from src.core.exceptions import PortalCanceledError
 from src.core.screenshot import ScreenshotFactory, ImageProcessor
 from src.core.socket_publisher import TranslationPublisher
 from src.config import IMG_PATH, DPI_SCALE_DEFAULT
@@ -56,6 +57,14 @@ class OCRWorker(QThread):
             self.last_text = ""
             print(f"OCRWorker: API key set for: {engine}")
 
+    def set_screenshot_engine(self, engine_name):
+        with self.lock:
+            if hasattr(self.screenshot_engine, "close"):
+                self.screenshot_engine.close()
+            self.screenshot_engine = ScreenshotFactory.get_engine(engine_name)
+            self.last_text = ""
+            print(f"OCRWorker: Screenshot engine: {engine_name}")
+
     def set_languages(self, source, target):
         with self.lock:
             self.translator_manager.set_languages(source, target)
@@ -65,7 +74,10 @@ class OCRWorker(QThread):
 
     def stop(self):
         self.running = False
-        self.wait()
+        if self.isRunning():
+            self.wait()
+        if hasattr(self.screenshot_engine, "close"):
+            self.screenshot_engine.close()
         self.publisher.stop()
         self.running_status.emit(False)
 
@@ -129,6 +141,13 @@ class OCRWorker(QThread):
                 # Emit performance data
                 self.performance_update.emit(time.perf_counter() - start_total)
 
+            except PortalCanceledError:
+                print("OCRWorker: Portal selection canceled, stopping.")
+                self.running = False
+                if hasattr(self.screenshot_engine, "close"):
+                    self.screenshot_engine.close()
+                self.publisher.stop()
+                self.running_status.emit(False)
             except Exception as e:
                 print(f"Loop Error: {e}")
             time.sleep(self.LOOP_SLEEP_SECONDS)
