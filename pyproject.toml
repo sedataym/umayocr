@@ -26,7 +26,6 @@ dependencies = [
     "deep-translator>=1.11.0",
     "python-dotenv>=1.0.0",
     "Pillow>=10.0.0",
-    "jeepney>=0.8.0",
     "dbus-next>=0.2.3",
     "Babel>=2.12.0",
 ]
