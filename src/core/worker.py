@@ -56,6 +56,14 @@ class OCRWorker(QThread):
             self.last_text = ""
             print(f"OCRWorker: API key set for: {engine}")
 
+    def set_screenshot_engine(self, engine_name):
+        with self.lock:
+            if hasattr(self.screenshot_engine, "close"):
+                self.screenshot_engine.close()
+            self.screenshot_engine = ScreenshotFactory.get_engine(engine_name)
+            self.last_text = ""
+            print(f"OCRWorker: Screenshot engine: {engine_name}")
+
     def set_languages(self, source, target):
         with self.lock:
             self.translator_manager.set_languages(source, target)

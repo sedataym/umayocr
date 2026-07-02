@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButt
 from src.core.worker import OCRWorker
 from src.ui.result_popup import TransparentOverlay
 from src.core.sniper import SniperFactory
-from src.config import OCR_ENGINES, TRANSLATION_ENGINES, LANGUAGES, SETTINGS_FILE, PRESETS_FILE, DPI_SCALE_DEFAULT
+from src.config import OCR_ENGINES, TRANSLATION_ENGINES, LANGUAGES, SETTINGS_FILE, PRESETS_FILE, DPI_SCALE_DEFAULT, SCREENSHOT_ENGINES
 from src.i18n import _
 
 class ControlPanel(QWidget):
@@ -70,6 +70,14 @@ class ControlPanel(QWidget):
         self.combo_ocr.currentTextChanged.connect(self.worker.set_engine)
         self.combo_ocr.currentTextChanged.connect(self.save_settings)
         tab_ocr_layout.addWidget(self.combo_ocr)
+
+        tab_ocr_layout.addWidget(QLabel(_("Screen Engine:")))
+        self.combo_screenshot = QComboBox()
+        self.combo_screenshot.addItems(SCREENSHOT_ENGINES)
+        self.combo_screenshot.setCurrentText("Portal")
+        self.combo_screenshot.currentTextChanged.connect(self.worker.set_screenshot_engine)
+        self.combo_screenshot.currentTextChanged.connect(self.save_settings)
+        tab_ocr_layout.addWidget(self.combo_screenshot)
 
         # DPI Scale control
         self.dpi_locked = False
@@ -370,7 +378,8 @@ class ControlPanel(QWidget):
             "translator_api_keys": self.api_keys,
             "capture_rect": (self.worker.capture_rect.x(), self.worker.capture_rect.y(), 
                             self.worker.capture_rect.width(), self.worker.capture_rect.height()),
-            "dpi_scale": self.worker.dpi_scale
+            "dpi_scale": self.worker.dpi_scale,
+            "screenshot_engine": self.combo_screenshot.currentText()
         }
         try:
             with open(SETTINGS_FILE, "wb") as f:
@@ -423,6 +432,11 @@ class ControlPanel(QWidget):
                     self.worker.set_rect(QRect(rect[0], rect[1], rect[2], rect[3]))
                     self.update_rect_label()
                 
+                # Load screenshot engine
+                screenshot_engine = s.get("screenshot_engine", "Portal")
+                self.combo_screenshot.setCurrentText(screenshot_engine)
+                self.worker.set_screenshot_engine(screenshot_engine)
+
                 # Load API keys
                 self.api_keys = s.get("translator_api_keys", {})
                 self._apply_api_key_for_current_engine()

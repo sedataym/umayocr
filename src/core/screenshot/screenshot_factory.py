@@ -11,12 +11,15 @@ else:
  
 class ScreenshotFactory:
     @staticmethod
-    def get_engine() -> BaseScreenshot:
-        if PortalScreenshot is not None and PortalScreenshot.is_available():
-            return PortalScreenshot()
+    def get_engine(engine_name: str = "Portal") -> BaseScreenshot:
+        if engine_name == "Portal":
+            if PortalScreenshot is not None and PortalScreenshot.is_available():
+                return PortalScreenshot()
 
-        if _PORTAL_IMPORT_ERROR is not None:
-            print(f"Portal screenshot engine unavailable: {_PORTAL_IMPORT_ERROR}")
+            if _PORTAL_IMPORT_ERROR is not None:
+                print(f"Portal screenshot engine unavailable: {_PORTAL_IMPORT_ERROR}")
+            print("Falling back to Spectacle screenshot engine.")
+            return SpectacleScreenshot()
 
-        # Fallback for KDE/Wayland systems where Spectacle is available.
+        # Spectacle
         return SpectacleScreenshot()

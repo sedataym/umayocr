@@ -3,6 +3,7 @@ import tempfile
 
 OCR_ENGINES = ["Tesseract", "EasyOCR"]  # "PaddleOCR" (uncomment when paddlepaddle is available)
 TRANSLATION_ENGINES = ["Google", "DeepL"]
+SCREENSHOT_ENGINES = ["Portal", "Spectacle"]
 LANGUAGES = {
     "Auto": "auto",
     "English": "en",
